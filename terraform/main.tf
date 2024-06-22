@@ -11,7 +11,7 @@ module "lambda_function" {
   handler       = "update_bls_data.update_bls_data"
   runtime       = "python3.12"
 
-  source_path = "${path.module}../src/lambda"
+  source_path = "${path.module}/../src/lambda"
 
   store_on_s3 = true
   s3_bucket   = module.s3_bucket.s3_bucket_id
@@ -57,7 +57,7 @@ module "lambda_layer_s3" {
   description         = "update_bls_data layer"
   compatible_runtimes = ["python3.12"]
 
-  source_path = "${path.module}../src/lambda"
+  source_path = "${path.module}/../src/lambda"
 
   store_on_s3 = true
   s3_bucket   = module.s3_bucket.s3_bucket_id
