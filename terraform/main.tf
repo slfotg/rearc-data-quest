@@ -46,6 +46,11 @@ module "lambda_function" {
   ]
   number_of_policy_jsons = 1
 
+  timeouts = {
+    create = "20m"
+    update = "20m"
+    delete = "20m"
+  }
 }
 
 module "lambda_layer_s3" {
@@ -53,7 +58,7 @@ module "lambda_layer_s3" {
 
   create_layer = true
 
-  layer_name          = "${random_pet.this.id}-layer-s3"
+  layer_name          = "lambda-builds-layer-s3"
   description         = "update_bls_data layer"
   compatible_runtimes = ["python3.12"]
 
@@ -63,15 +68,11 @@ module "lambda_layer_s3" {
   s3_bucket   = module.s3_bucket.s3_bucket_id
 }
 
-resource "random_pet" "this" {
-  length = 2
-}
-
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 3.0"
 
-  bucket_prefix = "${random_pet.this.id}-"
+  bucket_prefix = "lambda-builds-"
   force_destroy = true
 
   # S3 bucket-level Public Access Block configuration
