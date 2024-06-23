@@ -1,4 +1,3 @@
-import json
 import logging
 import os
 from urllib.parse import urljoin
@@ -17,6 +16,7 @@ USER_AGENT = os.environ["USER_AGENT"]
 HEADERS = {"User-Agent": USER_AGENT}
 KEY_PREFIX = "pr"
 CONTENTS = "/".join([KEY_PREFIX, "contents.yaml"])
+API_BASE_URL = os.environ["API_BASE_URL"]
 
 
 def get_public_data() -> dict[str, dict[str, str]]:
@@ -45,15 +45,17 @@ def download_to_s3(file_name: str, url: str, s3_client):
         )
 
 
-def get_metadata(client):
-    try:
-        response = client.get_object(
-            Bucket=os.environ["BUCKET_NAME"],
+def download_api_data(s3_client):
+    # todo
+    api_params = {"drilldowns": "Nation", "measures": "Population"}
+    with requests.get(API_BASE_URL, api_params) as response:
+        response.raise_for_status()
+        content = response.content
+        s3_client.put_object(
+            Body=content,
+            Bucket=BUCKET_NAME,
+            Key="/".join([KEY_PREFIX, "data.json"]),
         )
-        return json.loads(response["Body"].read())
-    except client.exceptions.NoSuchKey:
-        logger.info("No object found - returning empty")
-        return dict()
 
 
 def get_contents(s3_client) -> dict[str, dict[str, str]]:
@@ -93,6 +95,8 @@ def update_bls_data(event, context):
     for file_name, _ in files_to_download:
         files_updated = True
         download_to_s3(file_name, public_files[file_name]["url"], s3_client)
+
+    download_api_data(s3_client)
 
     if files_updated:
         s3_client.put_object(

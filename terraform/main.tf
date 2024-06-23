@@ -45,9 +45,10 @@ module "lambda_function" {
   ]
 
   environment_variables = {
-    BUCKET_NAME = "github-slfotg-rearc-data"
-    BASE_URL    = "https://download.bls.gov/pub/time.series/pr/"
-    USER_AGENT  = "slfotg@gmail.com"
+    BUCKET_NAME  = "github-slfotg-rearc-data"
+    BASE_URL     = "https://download.bls.gov/pub/time.series/pr/"
+    USER_AGENT   = "slfotg@gmail.com"
+    API_BASE_URL = "https://datausa.io/api/data"
   }
 
   attach_policy_jsons = true
