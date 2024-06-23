@@ -2,7 +2,6 @@ locals {
   function_name = "generate_reports"
   handler       = "index.generate_reports"
   runtime       = "python3.12"
-  lambda_source = "${path.module}/../src/generate_reports"
 }
 
 module "lambda_function" {
@@ -12,17 +11,13 @@ module "lambda_function" {
   handler       = local.handler
   runtime       = local.runtime
 
-  source_path = local.lambda_source
+  source_path = var.lambda_source
 
   store_on_s3 = true
   s3_bucket   = var.storage_bucket
   s3_prefix   = "lambda-builds/"
 
   artifacts_dir = "${path.root}/.terraform/lambda-builds/"
-
-  layers = [
-    module.lambda_layer_s3.lambda_layer_arn,
-  ]
 
   environment_variables = {
     BUCKET_NAME  = var.bucket_name
@@ -59,21 +54,6 @@ module "lambda_function" {
     update = "20m"
     delete = "20m"
   }
-}
-
-module "lambda_layer_s3" {
-  source = "terraform-aws-modules/lambda/aws"
-
-  create_layer = true
-
-  layer_name          = "${random_pet.this.id}-layer-s3"
-  description         = "generate_reports layer"
-  compatible_runtimes = [local.runtime]
-
-  source_path = local.lambda_source
-
-  store_on_s3 = true
-  s3_bucket   = var.storage_bucket
 }
 
 

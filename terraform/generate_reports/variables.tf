@@ -27,3 +27,8 @@ variable "account_id" {
   type        = string
   description = "account id"
 }
+
+variable "lambda_source" {
+  type        = string
+  description = "Source of code for lambda function"
+}

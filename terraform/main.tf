@@ -147,4 +147,5 @@ module "generate_report" {
   current_file   = "pr/pr.data.0.Current"
   json_file      = "pr/data.json"
   account_id     = data.aws_caller_identity.current.account_id
+  lambda_source  = "${path.module}/../src/generate_reports"
 }
