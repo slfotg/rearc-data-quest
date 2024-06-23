@@ -3,3 +3,4 @@ beautifulsoup4
 polars
 itables
 boto3
+pyyaml
