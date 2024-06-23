@@ -43,10 +43,6 @@ module "lambda_function" {
 
   artifacts_dir = "${path.root}/.terraform/lambda-builds/"
 
-  layers = [
-    module.lambda_layer_s3.lambda_layer_arn,
-  ]
-
   environment_variables = {
     BUCKET_NAME  = local.data_bucket
     BASE_URL     = local.pr_url
@@ -103,21 +99,6 @@ module "lambda_function" {
     update = "20m"
     delete = "20m"
   }
-}
-
-module "lambda_layer_s3" {
-  source = "terraform-aws-modules/lambda/aws"
-
-  create_layer = true
-
-  layer_name          = "${random_pet.this.id}-layer-s3"
-  description         = "update_bls_data layer"
-  compatible_runtimes = ["python3.12"]
-
-  source_path = "${path.module}/../src/update_data"
-
-  store_on_s3 = true
-  s3_bucket   = module.s3_bucket.s3_bucket_id
 }
 
 resource "random_pet" "this" {
