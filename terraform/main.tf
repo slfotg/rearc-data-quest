@@ -46,6 +46,7 @@ module "lambda_function" {
   ]
   number_of_policy_jsons = 1
 
+  timeout = 20
   timeouts = {
     create = "20m"
     update = "20m"
