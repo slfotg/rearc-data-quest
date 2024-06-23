@@ -1,6 +1,6 @@
 variable "data_bucket" {
   type        = string
-  description = "Bucket to write reports to"
+  description = "Bucket that stores datasets"
 }
 
 variable "storage_bucket" {
@@ -25,7 +25,7 @@ variable "json_file" {
 
 variable "account_id" {
   type        = string
-  description = "account id"
+  description = "IAM Role Id"
 }
 
 variable "lambda_source" {

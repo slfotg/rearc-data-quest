@@ -25,7 +25,7 @@ variable "api_url" {
 
 variable "account_id" {
   type        = string
-  description = "TODO - Remove this"
+  description = "IAM Role id"
 }
 
 variable "lambda_source" {

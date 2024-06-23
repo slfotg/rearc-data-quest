@@ -26,18 +26,18 @@ module "generate_reports_function" {
     JSON_FILE    = var.json_file
   }
 
-  # assume_role_policy_statements = {
-  #   account_root = {
-  #     effect  = "Allow",
-  #     actions = ["sts:AssumeRole"],
-  #     principals = {
-  #       account_principal = {
-  #         type        = "AWS",
-  #         identifiers = ["arn:aws:iam::${var.account_id}:root"]
-  #       }
-  #     }
-  #   }
-  # }
+  assume_role_policy_statements = {
+    account_root = {
+      effect  = "Allow",
+      actions = ["sts:AssumeRole"],
+      principals = {
+        account_principal = {
+          type        = "AWS",
+          identifiers = ["arn:aws:iam::${var.account_id}:root"]
+        }
+      }
+    }
+  }
 
   attach_policy_statements = true
   policy_statements = {
