@@ -16,7 +16,7 @@ module "eventbridge" {
   schedules = {
     lambda-cron = {
       description         = "Trigger for a Lambda"
-      schedule_expression = "cron(0 2 * * *)"
+      schedule_expression = "cron(0 21 * * ? *)"
       timezone            = "America/Chicago"
       arn                 = module.lambda_function.lambda_function_arn
       input               = jsonencode({ "job" : "cron-by-rate" })
