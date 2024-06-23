@@ -4,7 +4,7 @@ locals {
   runtime       = "python3.12"
 }
 
-module "generate_reports_function" {
+module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
 
   function_name = local.function_name
@@ -65,8 +65,8 @@ module "s3_notifications" {
 
   lambda_notifications = {
     lambda1 = {
-      function_arn  = module.generate_reports_function.lambda_function_arn
-      function_name = module.generate_reports_function.lambda_function_name
+      function_arn  = module.lambda_function.lambda_function_arn
+      function_name = module.lambda_function.lambda_function_name
       events        = ["s3:ObjectCreated:*"]
       filter_prefix = var.json_file
     }
