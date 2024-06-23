@@ -56,7 +56,19 @@ module "lambda_function" {
   }
 }
 
+module "s3_notifications" {
+  source = "terraform-aws-modules/s3-bucket/aws//modules/notification"
 
-resource "random_pet" "this" {
-  length = 2
+  bucket = var.bucket_name
+
+  eventbridge = true
+
+  lambda_notifications = {
+    lambda1 = {
+      function_arn  = module.lambda_function.lambda_function_arn
+      function_name = module.lambda_function.lambda_function_name
+      events        = ["s3:ObjectCreated:*"]
+      filter_prefix = var.json_file
+    }
+  }
 }
