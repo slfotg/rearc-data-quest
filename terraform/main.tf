@@ -137,3 +137,14 @@ module "s3_bucket" {
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+module "generate_report" {
+  source = "./generate_reports"
+
+  bucket_name    = local.data_bucket
+  storage_bucket = module.s3_bucket.s3_bucket_id
+  base_url       = "https://github-slfotg-rearc-data.s3.us-east-2.amazonaws.com"
+  current_file   = "pr/pr.data.0.Current"
+  json_file      = "pr/data.json"
+  account_id     = data.aws_caller_identity.current.account_id
+}
