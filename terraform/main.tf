@@ -4,6 +4,8 @@ resource "aws_ssm_parameter" "foo" {
   value = "bar"
 }
 
+data "aws_caller_identity" "current" {}
+
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
@@ -58,6 +60,19 @@ module "lambda_function" {
     ScanAmiRule = {
       principal  = "scheduler.amazonaws.com"
       source_arn = module.eventbridge.eventbridge_schedule_arns["lambda-cron"]
+    }
+  }
+
+  assume_role_policy_statements = {
+    account_root = {
+      effect  = "Allow",
+      actions = ["sts:AssumeRole"],
+      principals = {
+        account_principal = {
+          type        = "AWS",
+          identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+        }
+      }
     }
   }
 
