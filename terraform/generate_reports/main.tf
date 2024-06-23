@@ -48,7 +48,7 @@ module "lambda_function" {
     }
   }
 
-  timeout = 10
+  timeout = 20
   timeouts = {
     create = "20m"
     update = "20m"
