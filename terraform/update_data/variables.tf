@@ -1,5 +1,6 @@
 variable "data_bucket" {
-  type = string
+  type        = string
+  description = "Bucket that stores datasets"
 }
 
 variable "storage_bucket" {
@@ -8,19 +9,23 @@ variable "storage_bucket" {
 }
 
 variable "pr_url" {
-  type = string
+  type        = string
+  description = "Public API URL for BLS dataset"
 }
 
 variable "email" {
-  type = string
+  type        = string
+  description = "Email address to use for requests to BLS API"
 }
 
 variable "api_url" {
-  type = string
+  type        = string
+  description = "Data USA API URL"
 }
 
 variable "account_id" {
-  type = string
+  type        = string
+  description = "TODO - Remove this"
 }
 
 variable "lambda_source" {

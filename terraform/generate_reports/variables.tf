@@ -1,4 +1,4 @@
-variable "bucket_name" {
+variable "data_bucket" {
   type        = string
   description = "Bucket to write reports to"
 }

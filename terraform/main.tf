@@ -7,6 +7,10 @@ locals {
 
 data "aws_caller_identity" "current" {}
 
+data "aws_s3_bucket" "data_bucket" {
+  bucket = local.data_bucket
+}
+
 resource "random_pet" "this" {
   length = 2
 }
@@ -28,7 +32,7 @@ module "s3_bucket" {
 module "update_data" {
   source = "./update_data"
 
-  data_bucket    = local.data_bucket
+  data_bucket    = data.aws_s3_bucket.data_bucket.id
   account_id     = data.aws_caller_identity.current.account_id
   lambda_source  = "${path.module}/../src/generate_reports"
   api_url        = local.api_url
@@ -40,9 +44,9 @@ module "update_data" {
 module "generate_report" {
   source = "./generate_reports"
 
-  bucket_name    = local.data_bucket
+  data_bucket    = data.aws_s3_bucket.data_bucket.id
   storage_bucket = module.s3_bucket.s3_bucket_id
-  base_url       = "https://github-slfotg-rearc-data.s3.us-east-2.amazonaws.com"
+  base_url       = data.aws_s3_bucket.data_bucket.bucket_regional_domain_name
   current_file   = "pr/pr.data.0.Current"
   json_file      = "pr/data.json"
   account_id     = data.aws_caller_identity.current.account_id

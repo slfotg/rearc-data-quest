@@ -61,18 +61,18 @@ module "lambda_function" {
     }
   }
 
-  assume_role_policy_statements = {
-    account_root = {
-      effect  = "Allow",
-      actions = ["sts:AssumeRole"],
-      principals = {
-        account_principal = {
-          type        = "AWS",
-          identifiers = ["arn:aws:iam::${var.account_id}:root"]
-        }
-      }
-    }
-  }
+  #   assume_role_policy_statements = {
+  #     account_root = {
+  #       effect  = "Allow",
+  #       actions = ["sts:AssumeRole"],
+  #       principals = {
+  #         account_principal = {
+  #           type        = "AWS",
+  #           identifiers = ["arn:aws:iam::${var.account_id}:root"]
+  #         }
+  #       }
+  #     }
+  #   }
 
   attach_policy_jsons = true
   policy_jsons = [
