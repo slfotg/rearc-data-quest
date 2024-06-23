@@ -34,7 +34,7 @@ module "update_data" {
 
   data_bucket    = data.aws_s3_bucket.data_bucket.id
   account_id     = data.aws_caller_identity.current.account_id
-  lambda_source  = "${path.module}/../src/generate_reports"
+  lambda_source  = "${path.module}/../src/update_data"
   api_url        = local.api_url
   pr_url         = local.pr_url
   email          = local.email
