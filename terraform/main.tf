@@ -1,7 +1,8 @@
-resource "aws_ssm_parameter" "foo" {
-  name  = "foo"
-  type  = "String"
-  value = "bar"
+locals {
+  data_bucket = "github-slfotg-rearc-data"
+  pr_url      = "https://download.bls.gov/pub/time.series/pr/"
+  email       = "slfotg@gmail.com"
+  api_url     = "https://datausa.io/api/data"
 }
 
 data "aws_caller_identity" "current" {}
@@ -31,10 +32,10 @@ module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
 
   function_name = "update_bls_data"
-  handler       = "update_bls_data.update_bls_data"
+  handler       = "index.update_bls_data"
   runtime       = "python3.12"
 
-  source_path = "${path.module}/../src/lambda"
+  source_path = "${path.module}/../src/update_data"
 
   store_on_s3 = true
   s3_bucket   = module.s3_bucket.s3_bucket_id
@@ -47,10 +48,10 @@ module "lambda_function" {
   ]
 
   environment_variables = {
-    BUCKET_NAME  = "github-slfotg-rearc-data"
-    BASE_URL     = "https://download.bls.gov/pub/time.series/pr/"
-    USER_AGENT   = "slfotg@gmail.com"
-    API_BASE_URL = "https://datausa.io/api/data"
+    BUCKET_NAME  = local.data_bucket
+    BASE_URL     = local.pr_url
+    USER_AGENT   = local.email
+    API_BASE_URL = local.api_url
   }
 
   trusted_entities = ["scheduler.amazonaws.com"]
@@ -85,7 +86,10 @@ module "lambda_function" {
               {
                   "Effect": "Allow",
                   "Action": "s3:*",
-                  "Resource": "arn:aws:s3:::github-slfotg-rearc-data"
+                  "Resource": [
+                    "arn:aws:s3:::github-slfotg-rearc-data",
+                    "arn:aws:s3:::github-slfotg-rearc-data/*"
+                  ]
               }
           ]
       }
