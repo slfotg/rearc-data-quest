@@ -46,7 +46,6 @@ def download_to_s3(file_name: str, url: str, s3_client):
 
 
 def download_api_data(s3_client):
-    # todo
     api_params = {"drilldowns": "Nation", "measures": "Population"}
     with requests.get(API_BASE_URL, api_params) as response:
         response.raise_for_status()

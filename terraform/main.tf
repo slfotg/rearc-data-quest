@@ -51,6 +51,16 @@ module "lambda_function" {
     API_BASE_URL = "https://datausa.io/api/data"
   }
 
+  trusted_entities = ["scheduler.amazonaws.com"]
+
+  create_current_version_allowed_triggers = false
+  allowed_triggers = {
+    ScanAmiRule = {
+      principal  = "scheduler.amazonaws.com"
+      source_arn = module.eventbridge.eventbridge_schedule_arns["lambda-cron"]
+    }
+  }
+
   attach_policy_jsons = true
   policy_jsons = [
     <<-EOT
@@ -73,16 +83,6 @@ module "lambda_function" {
     create = "20m"
     update = "20m"
     delete = "20m"
-  }
-
-  trusted_entities = ["scheduler.amazonaws.com"]
-
-  create_current_version_allowed_triggers = false
-  allowed_triggers = {
-    ScanAmiRule = {
-      principal  = "scheduler.amazonaws.com"
-      source_arn = module.eventbridge.eventbridge_schedule_arns["lambda-cron"]
-    }
   }
 }
 
