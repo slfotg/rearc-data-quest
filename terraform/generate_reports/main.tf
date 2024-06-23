@@ -1,5 +1,5 @@
 locals {
-  function_name = "generate_reports"
+  function_name = "generate_all_reports"
   handler       = "index.generate_reports"
   runtime       = "python3.12"
 }
