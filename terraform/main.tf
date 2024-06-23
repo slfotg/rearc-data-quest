@@ -4,6 +4,27 @@ resource "aws_ssm_parameter" "foo" {
   value = "bar"
 }
 
+module "eventbridge" {
+  source = "terraform-aws-modules/eventbridge/aws"
+
+  create_bus = true
+  bus_name   = "example"
+
+  attach_lambda_policy = true
+  lambda_target_arns   = [module.lambda_function.lambda_function_arn]
+
+  schedules = {
+    lambda-cron = {
+      description         = "Trigger for a Lambda"
+      schedule_expression = "cron(0 2 * * *)"
+      timezone            = "US/Chicago"
+      arn                 = module.lambda_function.lambda_function_arn
+      input               = jsonencode({ "job" : "cron-by-rate" })
+    }
+  }
+}
+
+
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
 
@@ -51,6 +72,16 @@ module "lambda_function" {
     create = "20m"
     update = "20m"
     delete = "20m"
+  }
+
+  trusted_entities = ["scheduler.amazonaws.com"]
+
+  create_current_version_allowed_triggers = false
+  allowed_triggers = {
+    ScanAmiRule = {
+      principal  = "scheduler.amazonaws.com"
+      source_arn = module.eventbridge.eventbridge_schedule_arns["lambda-cron"]
+    }
   }
 }
 
