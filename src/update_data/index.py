@@ -66,7 +66,7 @@ def get_contents(s3_client) -> dict[str, dict[str, str]]:
         return {}
 
 
-def update_bls_data(event, context):
+def update_data(event, context):
 
     s3_client = boto3.client("s3")
     current_files = get_contents(s3_client)
