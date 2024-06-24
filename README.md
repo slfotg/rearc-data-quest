@@ -56,7 +56,7 @@ The final part deploying the lambdas discussed in the previous parts.
 
 The infrastructure is setup with Terraform and the code is in the [terraform](terraform/) directory.
 
-The deployment is done using [Github Actions](actions/) and the code is located [here](.github/workflows/main.yml)
+The deployment is done using Github Actions and the code is located [here](.github/workflows/main.yml)
 
 ## Contributing
 
