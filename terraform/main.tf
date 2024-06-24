@@ -46,7 +46,7 @@ module "generate_report" {
 
   data_bucket    = data.aws_s3_bucket.data_bucket.id
   storage_bucket = module.s3_bucket.s3_bucket_id
-  base_url       = data.aws_s3_bucket.data_bucket.bucket_regional_domain_name
+  base_url       = "https://${data.aws_s3_bucket.data_bucket.bucket_regional_domain_name}"
   current_file   = "pr/pr.data.0.Current"
   json_file      = "pr/data.json"
   account_id     = data.aws_caller_identity.current.account_id
