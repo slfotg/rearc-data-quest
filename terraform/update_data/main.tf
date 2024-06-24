@@ -1,9 +1,3 @@
-locals {
-  function_name = "update_data"
-  handler       = "index.update_data"
-  runtime       = "python3.12"
-}
-
 module "eventbridge" {
   source = "terraform-aws-modules/eventbridge/aws"
 
@@ -28,9 +22,9 @@ module "eventbridge" {
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name = local.function_name
-  handler       = local.handler
-  runtime       = local.runtime
+  function_name = var.function_name
+  handler       = var.handler
+  runtime       = var.runtime
 
   source_path = var.lambda_source
 
@@ -109,7 +103,7 @@ module "lambda_layer_s3" {
 
   layer_name          = "update-data-layer-s3"
   description         = "uupdate_data layer"
-  compatible_runtimes = [local.runtime]
+  compatible_runtimes = [var.runtime]
 
   source_path = var.lambda_source
 

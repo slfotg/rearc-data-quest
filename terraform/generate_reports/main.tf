@@ -1,15 +1,10 @@
-locals {
-  function_name = "generate_reports"
-  handler       = "index.generate_all_reports"
-  runtime       = "python3.12"
-}
 
 module "lambda_function" {
   source = "terraform-aws-modules/lambda/aws"
 
-  function_name = local.function_name
-  handler       = local.handler
-  runtime       = local.runtime
+  function_name = var.function_name
+  handler       = var.handler
+  runtime       = var.runtime
 
   source_path = var.lambda_source
 

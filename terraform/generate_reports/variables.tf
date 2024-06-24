@@ -1,34 +1,49 @@
-variable "data_bucket" {
+variable "function_name" {
+  description = "A unique name for your Lambda Function"
   type        = string
+}
+
+variable "handler" {
+  description = "Lambda Function entrypoint in your code"
+  type        = string
+}
+
+variable "runtime" {
+  description = "Lambda Function runtime"
+  type        = string
+}
+
+variable "data_bucket" {
   description = "Bucket that stores datasets"
+  type        = string
 }
 
 variable "storage_bucket" {
-  type        = string
   description = "Bucket to store lambda package"
+  type        = string
 }
 
 variable "base_url" {
-  type        = string
   description = "Base URL where the data is"
+  type        = string
 }
 
 variable "current_file" {
-  type        = string
   description = "Path to current file"
+  type        = string
 }
 
 variable "json_file" {
-  type        = string
   description = "Path to json file"
+  type        = string
 }
 
 variable "account_id" {
-  type        = string
   description = "IAM Role Id"
+  type        = string
 }
 
 variable "lambda_source" {
-  type        = string
   description = "Source of code for lambda function"
+  type        = string
 }

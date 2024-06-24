@@ -3,6 +3,7 @@ locals {
   pr_url      = "https://download.bls.gov/pub/time.series/pr/"
   email       = "slfotg@gmail.com"
   api_url     = "https://datausa.io/api/data"
+  runtime     = "python3.12"
 }
 
 data "aws_caller_identity" "current" {}
@@ -32,6 +33,10 @@ module "s3_bucket" {
 module "update_data" {
   source = "./update_data"
 
+  function_name = "update_data"
+  handler       = "index.update_data"
+  runtime       = local.runtime
+
   data_bucket    = data.aws_s3_bucket.data_bucket.id
   account_id     = data.aws_caller_identity.current.account_id
   lambda_source  = "${path.module}/../src/update_data"
@@ -43,6 +48,10 @@ module "update_data" {
 
 module "generate_report" {
   source = "./generate_reports"
+
+  function_name = "generate_reports"
+  handler       = "index.generate_all_reports"
+  runtime       = local.runtime
 
   data_bucket    = data.aws_s3_bucket.data_bucket.id
   storage_bucket = module.s3_bucket.s3_bucket_id
