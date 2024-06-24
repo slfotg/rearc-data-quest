@@ -11,15 +11,10 @@ from itables import to_html_datatable
 logger = logging.getLogger()
 logger.setLevel("INFO")
 
-BUCKET_NAME = os.environ["BUCKET_NAME"]
-BASE_URL = os.environ["BASE_URL"]
-CURRENT_FILE = os.environ["CURRENT_FILE"]
-JSON_FILE = os.environ["JSON_FILE"]
 
-
-def get_current_df() -> pl.DataFrame:
+def get_current_df(url: str) -> pl.DataFrame:
     current_df = (
-        pl.read_csv(urljoin(BASE_URL, CURRENT_FILE), separator="\t")
+        pl.read_csv(url, separator="\t")
         .rename(lambda col: col.strip())
         .with_columns(
             pl.col("series_id").str.strip_chars(),
@@ -31,8 +26,8 @@ def get_current_df() -> pl.DataFrame:
     return current_df
 
 
-def get_json_df() -> pl.DataFrame:
-    with requests.get(urljoin(BASE_URL, JSON_FILE)) as request:
+def get_json_df(url: str) -> pl.DataFrame:
+    with requests.get(url) as request:
         request.raise_for_status()
         return pl.DataFrame(json.loads(request.text)["data"])
 
@@ -81,14 +76,20 @@ def write_dataframe_to_s3(bucket: str, key: str, df: pl.DataFrame, s3_client):
 
 
 def generate_all_reports(event, context):
-    current_df = get_current_df()
-    json_df = get_json_df()
+
+    bucket_name = os.environ["BUCKET_NAME"]
+    base_url = os.environ["BASE_URL"]
+    current_file = os.environ["CURRENT_FILE"]
+    json_file = os.environ["JSON_FILE"]
+
+    current_df = get_current_df(urljoin(base_url, current_file))
+    json_df = get_json_df(urljoin(base_url, json_file))
 
     report_1 = generate_report_1(json_df)
     report_2 = generate_report_2(current_df)
     report_3 = generate_report_3(current_df, json_df)
 
     s3_client = boto3.client("s3")
-    write_dataframe_to_s3(BUCKET_NAME, "report_1.html", report_1, s3_client)
-    write_dataframe_to_s3(BUCKET_NAME, "report_2.html", report_2, s3_client)
-    write_dataframe_to_s3(BUCKET_NAME, "report_3.html", report_3, s3_client)
+    write_dataframe_to_s3(bucket_name, "report_1.html", report_1, s3_client)
+    write_dataframe_to_s3(bucket_name, "report_2.html", report_2, s3_client)
+    write_dataframe_to_s3(bucket_name, "report_3.html", report_3, s3_client)
